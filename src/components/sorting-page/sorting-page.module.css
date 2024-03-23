@@ -1,0 +1,29 @@
+.main {
+  display: flex;
+  justify-content: space-between;;
+  align-items: center;
+  margin: 0 130px;
+  margin-bottom: 48px;
+}
+.radio {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}
+.buttons {
+  display: flex;
+  gap: 12px;
+}
+.button {
+  width: 205px;
+}
+.array {
+  height: 340px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  justify-content: center;
+}
+.columns {
+  list-style: none;
+}
