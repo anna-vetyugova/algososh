@@ -1,7 +1,7 @@
 
 type Props = {
   index: number;
-  steps: string[][];
+  steps: string[][] | number[][];
   currentStepIndex: number;
 };
 

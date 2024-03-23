@@ -13,31 +13,56 @@ export const randomArr = (memo: Record<number, number> = {}): number[] => {
   return newArr
 }
 
-export const sortArrayByType = (type: string, array: number[]): number[] => {
-  let sortedArray: number[] = [...array];
-  
+export const sortArrayByType = (sortType: string, typeOfSorting: string, arr: number[]): number[][] => { 
+  const sortedArray: number[][] = [[...arr]];
+
   const swap = (arr: number[], firstIndex: number, secondIndex: number): void => {
     const temp = arr[firstIndex];
     arr[firstIndex] = arr[secondIndex];
     arr[secondIndex] = temp;
   };
 
-  const { length } = sortedArray;
-  for (let i = 0; i < length - 1; i++) {
-    let maxInd = i;
-    for (let j = 0; j < length; j++){
-      if (type === 'asc') {
-        if(sortedArray[j] > sortedArray[j + 1]) {
-          swap(sortedArray, j, j+1)
-        }
-      } 
-      else {
-        if(sortedArray[j] < sortedArray[j + 1]) {
-          swap(sortedArray, j, j+1)
+  const { length } = sortedArray[0];
+
+  if(sortType === 'selection') {
+    for (let i = 0; i < length - 1; i++) {
+      let minInd = i;
+      for (let j = i + 1; j < length; j++){
+        if (typeOfSorting === 'asc') {
+          if(arr[j] < arr[minInd]) {
+            minInd = j;
+          }
+        } 
+        else {
+          if(arr[j] > arr[minInd]) {
+            minInd = j;
+          }
         }
       }
+      if (minInd !== i) {
+        swap(arr, i, minInd)
+      }
+      sortedArray.push([...arr]);
+    }
+  } 
+  else {
+    for (let i = 0; i < length - 1; i++) {
+      for (let j = 0; j < length; j++){
+        if (typeOfSorting === 'asc') {
+          if(arr[j] > arr[j + 1]) {
+            swap(arr, j, j+1)
+          }
+        } 
+        else {
+          if(arr[j] < arr[j + 1]) {
+            swap(arr, j, j+1)
+          }
+        }
+      }
+      sortedArray.push([...arr]);
     }
   }
 
+  console.log(sortedArray);
   return sortedArray;
 }
