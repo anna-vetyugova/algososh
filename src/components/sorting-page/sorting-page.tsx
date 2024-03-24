@@ -10,7 +10,8 @@ import { Column } from "../ui/column/column";
 import { useState } from "react";
 import { sortArrayByType } from "./algorithm";
 import { ElementStates } from "../../types/element-states";
-import { getChartStatus } from "../string/algorithm";
+import { getColumnStatus } from "./algorithm";
+
 export const SortingPage: React.FC = () => {
   const [newArray, setNewArray] = useState<number[] | null>(null);
   const [sortedArray, setSorted] = useState<number[][] | null>(null);
@@ -88,8 +89,8 @@ export const SortingPage: React.FC = () => {
       </div>
       <ul className={styles.array}>
         {sortedArray?.[currentStepIndex].map((number, index) => {
-          const steps = sortedArray;
-          const status = getChartStatus({ index, steps, currentStepIndex });
+          const status = getColumnStatus({ index, sortedArray, currentStepIndex });
+          
           const state = status === "sorted"
               ? ElementStates.Modified
               : status === "sorting"
