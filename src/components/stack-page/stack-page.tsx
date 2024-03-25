@@ -20,12 +20,13 @@ export const StackPage: React.FC = () => {
   const addItem = () => {
     if(!inputValue.length) return;
 
-    setInputValue(''); // Clear input value first
-    if (!inputValue.length) return; // Exit if input value is empty
+    setInputValue('');
+    if (!inputValue.length) return; 
     
     stack.push(inputValue);
     setStackArr(stack.toArray());
     setCurrentStepIndex(0);
+
   }
 
   const deleteItem = () => {
@@ -36,7 +37,7 @@ export const StackPage: React.FC = () => {
     return
   };
 
-  const deleteArray = () => {
+  const deleteStack = () => {
     stack.clear();
     setStackArr(stack.toArray());
   }
@@ -58,25 +59,26 @@ export const StackPage: React.FC = () => {
               onChange={onChange}
               extraClass={styles.input}
               value={inputValue}
+              
             />
             <Button
               text={"Добавить"}
               onClick={addItem}
               isLoader={isLoader}
-              disabled={isDisabled}
+              disabled={inputValue.length === 0 ? true : false}
             />
             <Button
               text={"Удалить"}
               onClick={deleteItem}
               isLoader={isLoader}
-              disabled={isDisabled}
+              disabled={stack.getSize() > 0 ? false : true}
             />
           </div>
           <Button
             text={"Очистить"}
-            onClick={deleteArray}
+            onClick={deleteStack}
             isLoader={isLoader}
-            disabled={isDisabled}
+            disabled={stack.getSize() > 0 ? false : true}
           />         
         </div>
         <ul className={styles.circles}>

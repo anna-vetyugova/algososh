@@ -9,9 +9,7 @@ interface IStack<T> {
 
 export default class Stack<T> implements IStack<T> {
   private container: T[] = [];
- 
-
-
+  
   push = (item: T): void => {
     this.container.push(item)
   };

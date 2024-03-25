@@ -6,7 +6,7 @@ import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import styles from "../fibonacci-page/fibonacci-page.module.css";
-import { fibbonacchiNumber } from "./algorithm";
+import { fibbonacchiNumber } from "./fibonacci-algo";
 
 export const FibonacciPage: React.FC = () => {
   const [isLoader, setLoader] = useState(false);

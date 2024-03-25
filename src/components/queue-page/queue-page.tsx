@@ -6,42 +6,42 @@ import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import styles from "../stack-page/stack-page.module.css";
-
+import { Queue
+ } from "./gueue-algo";
 export const QueuePage: React.FC = () => {
-  const [isLoader, setLoader] = useState(false);
-  const [isDisabled, setDisabled] = useState(false);
-  const [isError, setError] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
 
-  const [input, setInput] = useState<number>(0);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [steps, setSteps] = useState<number[] | null>(null);
+  const [queue, setQueue] = useState(() => new Queue<string>(6));
+  const [queueArr, setQueueArr] = useState<(string | null)[]>([]);
 
-  const startAlgorithm = () => {
-    // const newSteps: number[] = fibbonacchiNumber(input);
-    // setSteps(newSteps);
-    // setLoader(true);
-    // setCurrentStepIndex(0);
+  React.useEffect(() => {
+    const arr: string[] = new Array(6).fill('');
+    setQueueArr(arr);
+  },[]); 
+
+  const addItem = () => {
+    if(!inputValue.length) return;
+    setInputValue('');
     
-    // console.log(newSteps.length - 1);
-    // let index = 0;
-    // const intervalId = setInterval(() => {
-    //   if (index >= newSteps.length - 1) {
-    //     clearInterval(intervalId);
-    //     setLoader(false);
-    //     return;
-    //   }
-    //   setCurrentStepIndex(++index);
-    // }, 1000);
+    queue.enqueue(inputValue);
+    setQueueArr(queue.toArray()); 
+
+    // console.log(queue);
+  }
+  const deleteItem = () => {
+    if (queueArr && queueArr.length > 0) {
+      queue.dequeue(); 
+      setQueueArr(queue.toArray());  
+    }
+    // console.log(queue);
+  }
+  const deleteQueue = () => {
+    queue.clear();
+    setQueueArr(queue.toArray());  
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // if(parseFloat(e.target.value) < 0 || Number.isInteger(parseFloat(e.target.value)) === false) {
-    //   setError(true);
-    //   return 
-    // } else {
-    //   setError(false);
-    //   setInput(parseInt(e.target.value));
-    // }
+    setInputValue(e.target.value);
   }
 
   return (
@@ -57,38 +57,37 @@ export const QueuePage: React.FC = () => {
               type={'text'}
               onChange={onChange}
               extraClass={styles.input}
+              value={inputValue}
             />
             <Button
               text={"Добавить"}
-              onClick={startAlgorithm}
-              isLoader={isLoader}
-              disabled={isDisabled}
+              onClick={addItem}
+              disabled={inputValue.length > 0 ? false : true}
             />
             <Button
               text={"Удалить"}
-              onClick={startAlgorithm}
-              isLoader={isLoader}
-              disabled={isDisabled}
+              onClick={deleteItem}
+              disabled={queue.getLength() > 0 ? false : true}
             />
           </div>
           <Button
             text={"Очистить"}
-            onClick={startAlgorithm}
-            isLoader={isLoader}
-            disabled={isDisabled}
+            onClick={deleteQueue}
+            disabled={queue.getLength() > 0 ? false : true}
           />         
         </div>
-        {/* <ul className={styles.circles}>
-          {steps?.map((number, index) => {
-            while(index <= currentStepIndex) {
-              return (
-                <li key={index} className={styles.circle}>
-                  <Circle letter={number.toString()} index={index}/>
-                </li>
-              );
-            }
-          })}
-        </ul> */}
+        <ul className={styles.circles}>
+        {queueArr?.map((item, index, arr) => {
+          const head = queue.getHead() === index && queue.getLength() > 0 ? 'head' : '';
+          const tail = queue.getTail() - 1 === index && queue.getLength() > 0 ? 'tail' : '';
+          
+          return (
+            <li key={index} className={styles.circle}>
+              <Circle letter={item?.toString()} tail={tail} head={head}/>
+            </li>
+          );
+        })}
+        </ul>
       </div>
     </SolutionLayout>
   );

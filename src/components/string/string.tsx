@@ -6,8 +6,8 @@ import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import styles from "../string/string.module.css";
-import reverseStringWithSteps from "./algorithm";
-import { getChartStatus } from "./algorithm";
+import reverseStringWithSteps from "./string-algo";
+import { getChartStatus } from "./string-algo";
 import { ElementStates } from "../../types/element-states";
 
 export const StringComponent: React.FC = () => {
