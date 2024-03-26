@@ -4,10 +4,10 @@ type Props = {
   currentStepIndex: number;
 };
 
-export const randomArr = (memo: Record<number, number> = {}): number[] => {
+export const randomArr = (memo: Record<number, number> = {}, minLen: number = 3, maxLen:number = 17): number[] => {
   let newArr: number[] = [];
-  let minLen = 3;
-  let maxLen = 17;
+  // let minLen = 3;
+  // let maxLen = 17;
 
   const newArrLength = Math.floor(Math.random() * (maxLen - minLen+1) + minLen-1);
   let i = 0;
@@ -21,7 +21,7 @@ export const randomArr = (memo: Record<number, number> = {}): number[] => {
     //   console.log('Такой элемент уже был добавлен');
     // }
     memo[i++]=newEl;
-    console.log(memo);
+    // console.log(memo);
   }
   // console.log(newArr);
   return newArr

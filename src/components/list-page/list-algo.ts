@@ -1,6 +1,7 @@
 export class Node<T> {
   value: T
   next: Node<T> | null
+
   constructor(value: T, next?: Node<T> | null) {
     this.value = value;
     this.next = (next === undefined ? null : next);
@@ -18,9 +19,10 @@ interface ILinkedList<T> {
   getSize: () => number;
 }
 
-export class LinkedList<T> implements ILinkedList<T> {
+export class LinkedList <T> implements ILinkedList<T> {
   private head: Node<T> | null;
   private size: number;
+
   constructor() {
     this.head = null;
     this.size = 0;
@@ -88,10 +90,7 @@ export class LinkedList<T> implements ILinkedList<T> {
   }
 
   deleteByIndex(index: number): void {
-    if (index < 0 || index >= this.size) {
-        console.log('Enter a valid index');
-        return;
-    }
+    if (index < 0 || index >= this.size) return
 
     let curr = this.head;
     let prev: Node<T> | null = null;
@@ -118,32 +117,23 @@ export class LinkedList<T> implements ILinkedList<T> {
   }
 
   deleteHead() {
-    let current: Node<T> | null = this.head;
-    
-    while(current && current.next !== null) {
-      current = current?.next;  
-    }
-  }
+    if (this.head === null) return this;
+    this.head = this.head.next;
+    this.size--;
+    return this.head;
+  };
 
   deleteTail() {
-    // если один элемент в списке
-    if (this.head && this.head.next === null) {
-      this.head = null;
-      this.size = 0;
-      return;
-    }
-
     let current: Node<T> | null = this.head;
     let prev: Node<T> | null = null;
-
-    while(current && current.next !== null) {
+  
+    while (current && current.next !== null) {
       prev = current;
-      current = current?.next;  
+      current = current.next;
     }
-    if (prev !== null) {
+    if (prev) {
       prev.next = null;
     }
-
     if (current === this.head) {
       this.head = null;
     }

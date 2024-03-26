@@ -8,6 +8,8 @@ import { Circle } from "../ui/circle/circle";
 import styles from "../list-page/list-page.module.css";
 import { LinkedList } from "./list-algo";
 import { ElementStates } from "../../types/element-states";
+import { randomArr } from "../sorting-page/algorithm";
+import { updateListArray, TItem, addToHeadUpdateArr, addToTailUpdateArr, deleteFromHeadUpdateArr, deleteFromTailUpdateArr, addByIndexUpdateArr } from "./utils";
 
 type Props = {
   fill?: string;
@@ -21,7 +23,7 @@ export default function ArrowIcon({ fill = "#0032FF" }: Props) {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ marginTop: '32px' }}
+      style={{ marginTop: "32px" }}
     >
       <path
         fill={fill}
@@ -35,63 +37,74 @@ export default function ArrowIcon({ fill = "#0032FF" }: Props) {
 
 export const ListPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [list, setList] = useState(() => new LinkedList<string>());
-  const [listArr, setListArr] = useState<(string | null)[]>([]);
-  const [newHeadElement, setNewHeadElement] = useState<string | null>(null);
-  const [isAboveCircleVisible, setIsAboveCircleVisible] = useState<boolean>(false);
-  const [mainCircleState, setMainCircleState] = useState<ElementStates>(ElementStates.Modified);
+  const [indexValue, setIndexValue] = useState<string>("");
+  const [isLoader, setLoader] = useState<string>("");
+
+  const [linkedList, setLinkedList] = useState(() => {
+    const initialList = new LinkedList<string>();
+    const randomArray: number[] = randomArr({}, 3, 5);
+    const stringArray = randomArray.map((item) => item.toString());
+    stringArray.forEach((item) => initialList.append(item));
+    return initialList;
+  });
+
+  const [list, setList] = useState<TItem[]>();
 
   React.useEffect(() => {
-    if(newHeadElement && listArr.length === 0) {
-      list.prepend(newHeadElement);
-      setListArr(list.toArray());
+    setList(updateListArray(linkedList.toArray()));
+  }, [linkedList]);
 
-      const intervalId = setInterval(() => {
-        setMainCircleState(ElementStates.Default);
-        clearInterval(intervalId);
-      }, 1000);
-
-      setMainCircleState(ElementStates.Modified);
-      // setIsAboveCircleVisible(false);
-      setNewHeadElement(null); 
-    }
-
-    if(newHeadElement && listArr.length > 0){
-      setIsAboveCircleVisible(true);
-      const intervalId = setInterval(() => {
-        setIsAboveCircleVisible(false);
-        list.prepend(newHeadElement);
-        setListArr(list.toArray());
-        setMainCircleState(ElementStates.Modified);
-        
-        clearInterval(intervalId);
-
-        const intervalId2 = setInterval(() => {
-          setIsAboveCircleVisible(false);
-          setNewHeadElement(null); 
-          setMainCircleState(ElementStates.Default);
-          clearInterval(intervalId2);
-        }, 1000);
-
-      }, 1000);
-      setMainCircleState(ElementStates.Default);
-      
-
-
-
-    }
-  }, [newHeadElement]);
-
-
-  const addElement = () => {
-    if (!inputValue.length) return;
-    setInputValue("");
-    setNewHeadElement(inputValue);
-
+  const setTimer = (array: TItem[][]) => {
+    let step = 0;
+    setList(array[step]);
+    const timerId = setInterval(() => {
+      if (step < array.length - 1) {
+        step++;
+        setList(array[step]);
+      } else {
+        clearInterval(timerId);
+        setInputValue('');
+        setLoader('');
+      }
+    }, 1000);
+  }
+  const addToHeadElement = () => {
+    if(linkedList.getSize() === 7) return
+    setLoader("addToHead");
+    const updatedArray = addToHeadUpdateArr(linkedList, inputValue);
+    setTimer(updatedArray);
+  };
+  const addToTailElement = () => {;
+    if(linkedList.getSize() === 7) return
+    setLoader("addToTail");
+    const updatedArray = addToTailUpdateArr(linkedList, inputValue);
+    setTimer(updatedArray);
+  };
+  const deleteFromHead = () => {;
+    if(linkedList.getSize() === 1) return
+    setLoader("deleteFromHead");
+    const updatedArray = deleteFromHeadUpdateArr(linkedList);
+    setTimer(updatedArray);
+  };
+  const deleteFromTail = () => {;
+    if(linkedList.getSize() === 1) return
+    setLoader("deleteFromTail");
+    const updatedArray = deleteFromTailUpdateArr(linkedList);
+    setTimer(updatedArray);
+  };
+  const insertAtIndex = () => {
+    if(linkedList.getSize() === 7) return
+    setLoader("insertAtIndex");
+    const updatedArray = addByIndexUpdateArr(linkedList, inputValue, parseInt(indexValue));
+    // console.log(updatedArray);
+    setTimer(updatedArray);
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+  };
+  const onChangeIndex = (e: ChangeEvent<HTMLInputElement>) => {
+    setIndexValue(e.target.value);
   };
   return (
     <SolutionLayout title="Связный список">
@@ -108,77 +121,78 @@ export const ListPage: React.FC = () => {
           />
           <Button
             text={"Добавить в head"}
-            onClick={addElement}
-            disabled={inputValue === "" ? true : false}
-            // isLoader={isLoader}
+            onClick={addToHeadElement}
+            disabled={inputValue === "" || linkedList.getSize() === 7 ? true : false}
+            isLoader={isLoader === "addToHead" ? true : false}
           />
           <Button
             text={"Добавить в tail"}
-            // onClick={startAlgorithm}
-            // isLoader={isLoader}
-            // disabled={isDisabled}
+            onClick={addToTailElement}
+            isLoader={isLoader === 'addToTail' ? true : false}
+            disabled={inputValue === '' || linkedList.getSize() === 7 ? true : false}
           />
           <Button
             text={"Удалить из head"}
-            // onClick={startAlgorithm}
-            // isLoader={isLoader}
-            // disabled={isDisabled}
+            onClick={deleteFromHead}
+            isLoader={isLoader === "deleteFromHead" ? true : false}
+            disabled={ linkedList.getSize() === 1 ? true : false}
           />
           <Button
             text={"Удалить из tail"}
-            // onClick={startAlgorithm}
-            // isLoader={isLoader}
-            // disabled={isDisabled}
+            onClick={deleteFromTail}
+            isLoader={isLoader === "deleteFromTail" ? true : false}
+            disabled={ inputValue === '' || indexValue === '' || linkedList.getSize() === 7 ? true : false}
           />
         </div>
         <div className={styles.buttons}>
           <Input
             isLimitText={false}
             placeholder="Введите индекс"
-            type={"text"}
-            // onChange={onChange}
+            type={"number"}
+            onChange={onChangeIndex}
             extraClass={styles.input}
+            value={indexValue}
           />
           <Button
             text={"Добавить по индексу"}
-            // onClick={startAlgorithm}
-            // isLoader={isLoader}
-            // disabled={isDisabled}
+            onClick={insertAtIndex}
+            isLoader={isLoader === "insertAtIndex" ? true : false}
+            disabled={indexValue === "" || inputValue === "" ? true : false}
             extraClass={styles.button}
           />
           <Button
             text={"Удалить по индексу"}
             // onClick={startAlgorithm}
             // isLoader={isLoader}
-            // disabled={isDisabled}
+            disabled={indexValue === "" || inputValue === "" ? true : false}
             extraClass={styles.button}
           />
         </div>
         <ul className={styles.circlesContainer}>
-          {listArr?.map((element, index, arr) => {
-            const isHead = index === 0;
-            // console.log(index);
+          {list?.map((element, index, arr) => {
             return (
               <li key={index} className={styles.circles}>
-              <Circle
-                letter={element?.toString()}
-                index={index}
-                head={ isAboveCircleVisible && index === 0 ? (
-                  <Circle
-                    letter={newHeadElement?.toString()}
-                    isSmall={true}
-                    state={ElementStates.Changing}
-                  />
-                ) : isHead ? (
-                  "head"
-                ) : (
-                  ""
-                )}
-                state={isHead ? mainCircleState : ElementStates.Default}
-                extraClass={styles.circle}
-              />
-              {index !== arr.length - 1 && <ArrowIcon />}
-            </li>
+                <Circle
+                  head={ element.head.type === "circle" ? 
+                    <Circle
+                      letter={element.head.item}
+                      isSmall
+                      state={element.head.state}
+                    /> : element.head.item
+                  }
+                  tail={ element.tail?.type === "circle" ? 
+                      <Circle
+                        letter={element.tail?.item}
+                        isSmall
+                        state={element.tail?.state}
+                      /> : element.tail?.item
+                  }
+                  letter={element.item}
+                  index={index}
+                  state={element.state}
+                />
+                {index !== arr.length - 1 && <ArrowIcon />}
+              </li>
             );
           })}
         </ul>
