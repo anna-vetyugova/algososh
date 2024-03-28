@@ -54,7 +54,7 @@ export const SortingPage: React.FC = () => {
         setSortDirection('');
         setLoader(false);
       }
-    }, 300);
+    }, 500);
   }
   const onChange = (type: string) => {
     setType(type);
