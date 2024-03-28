@@ -15,30 +15,40 @@ export class Queue<T> implements IQueue<T> {
   private tail = 0;
   private readonly size: number = 0;
   private length: number = 0;
+  private lastAddedIndex: number | null = null;
+  private lastDeletedIndex: number | null = null;
 
   constructor(size: number) {
     this.size = size;
     this.container = Array(size);
   }
 
+  getLastAddedIndex = (): number | null => {
+    return this.lastAddedIndex;
+  };
+  getLastDeletedIndex = (): number | null => {
+    return this.lastDeletedIndex;
+  };
+
   enqueue = (item: T) => {
     if (this.length >= this.size) {
       throw new Error("Maximum length exceeded");
     }
     
-   this.container[this.tail % this.size] = item;
+   const index = this.tail % this.size;
+   this.container[index] = item;
    this.tail++;
    this.length++;
+   this.lastAddedIndex = index; 
+   
   };
 
   dequeue = () => {
-    if (this.isEmpty()) {
-      throw new Error("No elements in the queue");
-    }
-
-    this.container[this.head % this.size] = null;
+    const index = this.head % this.size;
+    this.container[index] = null;
     this.head++;
     this.length--;
+    this.lastDeletedIndex = index; 
   };
 
   peak = (): T | null => {
@@ -71,5 +81,6 @@ export class Queue<T> implements IQueue<T> {
   getLength = (): number => {
     return this.length
   }
+
   isEmpty = () => this.length === 0;
 }

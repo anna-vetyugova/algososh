@@ -8,8 +8,8 @@ import { Circle } from "../ui/circle/circle";
 import styles from "../list-page/list-page.module.css";
 import { LinkedList } from "./list-algo";
 import { ElementStates } from "../../types/element-states";
-import { randomArr } from "../sorting-page/algorithm";
-import { updateListArray, TItem, addToHeadUpdateArr, addToTailUpdateArr, deleteFromHeadUpdateArr, deleteFromTailUpdateArr, addByIndexUpdateArr } from "./utils";
+import { randomArr } from "../sorting-page/utils";
+import { updateListArray, TItem, addToHeadUpdateArr, addToTailUpdateArr, deleteFromHeadUpdateArr, deleteFromTailUpdateArr, addByIndexUpdateArr, deleteByIndexUpdateArr } from "./utils";
 
 type Props = {
   fill?: string;
@@ -42,7 +42,7 @@ export const ListPage: React.FC = () => {
 
   const [linkedList, setLinkedList] = useState(() => {
     const initialList = new LinkedList<string>();
-    const randomArray: number[] = randomArr({}, 3, 5);
+    const randomArray: number[] = randomArr(3, 5);
     const stringArray = randomArray.map((item) => item.toString());
     stringArray.forEach((item) => initialList.append(item));
     return initialList;
@@ -96,10 +96,14 @@ export const ListPage: React.FC = () => {
     if(linkedList.getSize() === 7) return
     setLoader("insertAtIndex");
     const updatedArray = addByIndexUpdateArr(linkedList, inputValue, parseInt(indexValue));
-    // console.log(updatedArray);
     setTimer(updatedArray);
   };
-
+  const deleteAtIndex = () => {
+    if(linkedList.getSize() === 1) return
+    setLoader("deleteAtIndex");
+    const updatedArray = deleteByIndexUpdateArr(linkedList, parseInt(indexValue));
+    setTimer(updatedArray);
+  };
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -122,26 +126,26 @@ export const ListPage: React.FC = () => {
           <Button
             text={"Добавить в head"}
             onClick={addToHeadElement}
-            disabled={inputValue === "" || linkedList.getSize() === 7 ? true : false}
+            disabled={inputValue === "" || linkedList.getSize() === 7 || isLoader !== '' ? true : false}
             isLoader={isLoader === "addToHead" ? true : false}
           />
           <Button
             text={"Добавить в tail"}
             onClick={addToTailElement}
             isLoader={isLoader === 'addToTail' ? true : false}
-            disabled={inputValue === '' || linkedList.getSize() === 7 ? true : false}
+            disabled={inputValue === '' || linkedList.getSize() === 7 || isLoader !== '' ? true : false}
           />
           <Button
             text={"Удалить из head"}
             onClick={deleteFromHead}
             isLoader={isLoader === "deleteFromHead" ? true : false}
-            disabled={ linkedList.getSize() === 1 ? true : false}
+            disabled={ linkedList.getSize() === 1 || isLoader !== '' ? true : false}
           />
           <Button
             text={"Удалить из tail"}
             onClick={deleteFromTail}
             isLoader={isLoader === "deleteFromTail" ? true : false}
-            disabled={ inputValue === '' || indexValue === '' || linkedList.getSize() === 7 ? true : false}
+            disabled={ inputValue === '' || indexValue === '' || linkedList.getSize() === 7 || isLoader !== '' ? true : false}
           />
         </div>
         <div className={styles.buttons}>
@@ -157,14 +161,14 @@ export const ListPage: React.FC = () => {
             text={"Добавить по индексу"}
             onClick={insertAtIndex}
             isLoader={isLoader === "insertAtIndex" ? true : false}
-            disabled={indexValue === "" || inputValue === "" ? true : false}
+            disabled={indexValue === "" || inputValue === "" || parseInt(indexValue) < 0 || isLoader !== '' ? true : false}
             extraClass={styles.button}
           />
           <Button
             text={"Удалить по индексу"}
-            // onClick={startAlgorithm}
-            // isLoader={isLoader}
-            disabled={indexValue === "" || inputValue === "" ? true : false}
+            onClick={deleteAtIndex}
+            isLoader={isLoader === "deleteAtIndex" ? true : false}
+            disabled={indexValue === ""  || parseInt(indexValue) < 0 || isLoader !== '' ? true : false}
             extraClass={styles.button}
           />
         </div>

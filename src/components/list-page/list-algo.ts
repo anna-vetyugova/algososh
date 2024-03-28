@@ -30,7 +30,6 @@ export class LinkedList <T> implements ILinkedList<T> {
 
   prepend(element: T) {
     const node = new Node(element);
-
     if(this.head === null) {
       this.head = node;
     } else {
@@ -43,7 +42,6 @@ export class LinkedList <T> implements ILinkedList<T> {
   append(element: T) {
     const node = new Node(element);
     let current;
-
     if (this.head === null) {
       this.head = node;
     } else {
@@ -57,59 +55,42 @@ export class LinkedList <T> implements ILinkedList<T> {
   }
 
   addByIndex(element: T, index: number) {
-    if (index < 0 || index > this.size) {
-      console.log('Enter a valid index');
-      return;
-  }
-  const node = new Node(element);
-
-  // добавить элемент в начало списка
-  if (index === 0) {
-      node.next = this.head;
-      this.head = node;
-  } else {
-      let curr = this.head;
-      let prev: Node<T> | null = null;
-      let currIndex = 0;
-
-      // перебрать элементы в списке до нужной позиции
-      while (currIndex < index && curr !== null) {
-          prev = curr;
-          curr = curr.next;
-          currIndex++;
-      }
-
-      // добавить элемент
-      if (prev !== null) {
-          prev.next = node;
-      }
-      node.next = curr;
-  }
-
-  this.size++;
+    const node = new Node(element);
+    // добавить в начало списка
+    if (index === 0) {
+        node.next = this.head;
+        this.head = node;
+    } else {
+        let curr = this.head;
+        let prev: Node<T> | null = null;
+        let currIndex = 0;
+        while (currIndex < index && curr !== null) { // перебор элементы в списке до нужной позиции
+            prev = curr;
+            curr = curr.next;
+            currIndex++;
+        }
+        if (prev !== null) {
+            prev.next = node;
+        }
+        node.next = curr;
+    }
+    this.size++;
   }
 
   deleteByIndex(index: number): void {
-    if (index < 0 || index >= this.size) return
-
     let curr = this.head;
     let prev: Node<T> | null = null;
     let currIndex = 0;
 
-    // перебрать элементы в списке до нужной позиции
     while (currIndex < index && curr !== null) {
         prev = curr;
         curr = curr.next;
         currIndex++;
     }
-
-    // если узел найден, удалить его
     if (curr !== null) {
         if (prev === null) {
-            // удаление из начала списка
             this.head = curr.next;
         } else {
-            // удаление из середины или конца списка
             prev.next = curr.next;
         }
         this.size--;

@@ -8,36 +8,60 @@ import { Circle } from "../ui/circle/circle";
 import styles from "../stack-page/stack-page.module.css";
 import { Queue
  } from "./gueue-algo";
+import { ElementStates } from "../../types/element-states";
+
+
 export const QueuePage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>('');
-
-  const [queue, setQueue] = useState(() => new Queue<string>(6));
-  const [queueArr, setQueueArr] = useState<(string | null)[]>([]);
+  const [inputValueIndex, setInputValueIndex] = useState<number | null>(null);
+  const [queue, setQueue] = useState(() => new Queue<string>(7));
+  const [queueArr, setQueueArr] = useState<(string)[]>([]);
+  const [isLoader, setLoader] = useState(false);
 
   React.useEffect(() => {
-    const arr: string[] = new Array(6).fill('');
+    const arr: string[] = new Array(7).fill('');
     setQueueArr(arr);
   },[]); 
 
   const addItem = () => {
-    if(!inputValue.length) return;
-    setInputValue('');
+    if (!inputValue.length) return;
+    setLoader(true);
     
     queue.enqueue(inputValue);
-    setQueueArr(queue.toArray()); 
+    const index = queue.getLastAddedIndex();
+    setInputValueIndex(index);
 
-    // console.log(queue);
+    setTimeout(() => {
+    const newArr = queue.toArray(); 
+    setQueueArr(newArr); 
+      setInputValueIndex(null);
+      setInputValue('');
+      setLoader(false);
+    }, 500);
   }
+
   const deleteItem = () => {
     if (queueArr && queueArr.length > 0) {
-      queue.dequeue(); 
-      setQueueArr(queue.toArray());  
+      setLoader(true);
+      
+      queue.dequeue();
+      const index = queue.getLastDeletedIndex();
+      console.log(index);
+      setInputValueIndex(index);
+  
+      setTimeout(() => {
+      const newArr = queue.toArray(); 
+      setQueueArr(newArr); 
+        setInputValueIndex(null);
+        setInputValue('');
+        setLoader(false);
+      }, 500);
     }
-    // console.log(queue);
   }
+
   const deleteQueue = () => {
     queue.clear();
-    setQueueArr(queue.toArray());  
+    setQueueArr(queue.toArray());
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,27 +87,29 @@ export const QueuePage: React.FC = () => {
               text={"Добавить"}
               onClick={addItem}
               disabled={inputValue.length > 0 ? false : true}
+              isLoader={isLoader ? true : false}
             />
             <Button
               text={"Удалить"}
               onClick={deleteItem}
               disabled={queue.getLength() > 0 ? false : true}
+              isLoader={isLoader ? true : false}
             />
           </div>
           <Button
             text={"Очистить"}
             onClick={deleteQueue}
-            disabled={queue.getLength() > 0 ? false : true}
+            isLoader={isLoader ? true : false}
           />         
         </div>
         <ul className={styles.circles}>
         {queueArr?.map((item, index, arr) => {
           const head = queue.getHead() === index && queue.getLength() > 0 ? 'head' : '';
           const tail = queue.getTail() - 1 === index && queue.getLength() > 0 ? 'tail' : '';
-          
+          const state = index === inputValueIndex ? ElementStates.Changing : ElementStates.Default;
           return (
             <li key={index} className={styles.circle}>
-              <Circle letter={item?.toString()} tail={tail} head={head}/>
+              <Circle letter={item?.toString()} tail={tail} head={head} index={index} state={state}/>
             </li>
           );
         })}

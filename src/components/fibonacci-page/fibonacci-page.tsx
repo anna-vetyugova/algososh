@@ -22,8 +22,7 @@ export const FibonacciPage: React.FC = () => {
     setSteps(newSteps);
     setLoader(true);
     setCurrentStepIndex(0);
-    
-    console.log(newSteps.length - 1);
+  
     let index = 0;
     const intervalId = setInterval(() => {
       if (index >= newSteps.length - 1) {

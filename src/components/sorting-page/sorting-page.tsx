@@ -1,53 +1,69 @@
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, ChangeEvent } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 
 import styles from "../sorting-page/sorting-page.module.css";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Button } from "../ui/button/button";
 import { Direction } from "../../types/direction";
-import { randomArr } from "./algorithm";
+import { randomArr } from "./utils";
 import { Column } from "../ui/column/column";
 import { useState } from "react";
-import { sortArrayByType } from "./algorithm";
 import { ElementStates } from "../../types/element-states";
-import { getColumnStatus } from "./algorithm";
+import { sortArrayByType } from "./sorting-algo";
+
+export type TItem = {
+  item: number;
+  state: ElementStates;
+};
 
 export const SortingPage: React.FC = () => {
-  const [newArray, setNewArray] = useState<number[] | null>(null);
-  const [sortedArray, setSorted] = useState<number[][] | null>(null);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [sortType, setSort] = useState<string>("selection");
-  const [isLoader, setLoader] = useState(false);
-  const [type, setTypeSort] = useState<string>('');
+  const [newArr, setNewArr] = useState<TItem[][]>([]);
+  const [updatedArray, setUpdatedArray] = useState<TItem[]>([]);
+  const [isLoader, setLoader] = useState<boolean>(false);
+  const [type, setType] = useState<string>('selection');
+  const [sortDirection, setsortDirection] = useState<string>(Direction.Ascending);
 
+  React.useEffect(() => {
+    getNewArray();
+  },[]);
   const getNewArray = () => {
     const randomArray: number[] = randomArr();
-    setNewArray(randomArray);
-  };
-  const setSortType = (sortType: string) => {
-    setSort(sortType);
-  };
-  const sortArray = (typeOfSorting: string) => {
-    setTypeSort(typeOfSorting);
-
-    if (!newArray) return;
-    setLoader(true);
-    const sortedArray = sortArrayByType(sortType, typeOfSorting, newArray);
-    setSorted(sortedArray);
-    setCurrentStepIndex(0);
-
-    let index = 0;
-    if (!sortedArray) return;
-    const intervalId = setInterval(() => {
-      if (index >= sortedArray.length) {
-        clearInterval(intervalId);
-        setLoader(false);
-        return;
+    const updatedArray = randomArray.map((item) => {
+      return {
+        item: item,
+        state: ElementStates.Default
       }
-      setCurrentStepIndex(index++);
-    }, 1000);
+    });
+    setUpdatedArray(updatedArray); 
   };
 
+  const sortArray = () => {
+    setLoader(true);
+    const newArr = sortArrayByType(updatedArray, type, sortDirection);
+    setNewArr(newArr);
+
+    let step = 0;
+    setUpdatedArray(newArr[step]);
+
+    const timerId = setInterval(() => {
+      if (step < newArr.length - 1) {
+        step++;
+        setUpdatedArray(newArr[step]);
+      } else {
+        clearInterval(timerId);
+        setsortDirection('');
+        setLoader(false);
+      }
+    }, 500);
+
+  }
+  const onChange = (type: string) => {
+    setType(type);
+  };
+  const onClick = (sortDirection: string) => {
+    setsortDirection(sortDirection);
+    sortArray();
+  };
   return (
     <SolutionLayout title="Сортировка массива">
       <div className={styles.main}>
@@ -55,14 +71,14 @@ export const SortingPage: React.FC = () => {
           <RadioInput
             label="Выбор"
             value="selection"
-            onChange={() => setSortType("selection")}
-            checked={sortType === "selection"}
+            onChange={() => onChange('selection')}
+            checked={sortDirection === "selection"}
           />
           <RadioInput
             label="Пузырёк"
             value="bubble"
-            onChange={() => setSortType("bubble")}
-            checked={sortType === "bubble"}
+            onChange={() => onChange('bubble')}
+            checked={sortDirection === "bubble"}
           />
         </div>
         <div className={styles.buttons}>
@@ -70,36 +86,35 @@ export const SortingPage: React.FC = () => {
             text={"По возрастанию"}
             sorting={Direction.Ascending}
             extraClass={styles.button}
-            onClick={() => sortArray("asc")}
-            disabled={!newArray}
+            onClick={() => onClick('ascending')}
+            disabled={isLoader ? true : false}
+            isLoader={isLoader ? true: false}
           />
           <Button
             text={"По убыванию"}
             sorting={Direction.Descending}
             extraClass={styles.button}
-            onClick={() => sortArray("desc")}
-            disabled={!newArray}
+            onClick={() => onClick('descending')}
+            disabled={isLoader ? true : false}
+            isLoader={isLoader ? true: false}
           />
         </div>
         <Button
           text={"Новый массив"}
           extraClass={styles.button}
           onClick={getNewArray}
+          isLoader={isLoader ? true: false}
         />
       </div>
       <ul className={styles.array}>
-        {sortedArray?.[currentStepIndex].map((number, index) => {
-          const status = getColumnStatus({ index, sortedArray, currentStepIndex });
-          
-          const state = status === "sorted"
-              ? ElementStates.Modified
-              : status === "sorting"
-              ? ElementStates.Changing
-              : ElementStates.Default;
+        {updatedArray?.map((item, index) => {
           return (
             <li key={index} className={styles.columns}>
-              <Column index={number} state={state} />
-            </li>
+            <Column
+              index={item.item}
+              state={item.state}
+            />
+          </li>
           );
         })}
       </ul>

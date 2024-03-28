@@ -7,7 +7,7 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import styles from "../string/string.module.css";
 import reverseStringWithSteps from "./string-algo";
-import { getChartStatus } from "./string-algo";
+import { getChartStatus } from "./utils";
 import { ElementStates } from "../../types/element-states";
 
 export const StringComponent: React.FC = () => {
@@ -23,7 +23,6 @@ export const StringComponent: React.FC = () => {
     setCurrentStepIndex(0);
 
     if (!newSteps.length) return;
-
     let index = 0;
     const intervalId = setInterval(() => {
       if (index >= newSteps.length - 1) {
@@ -31,7 +30,7 @@ export const StringComponent: React.FC = () => {
         setLoader(false);
         return;
       }
-      setCurrentStepIndex(index++);
+      setCurrentStepIndex(++index);
     }, 1000);
   };
 
@@ -51,10 +50,12 @@ export const StringComponent: React.FC = () => {
             text={"Развернуть"}
             onClick={startAlgorithm}
             isLoader={isLoader}
+
           />
         </div>
         <ul className={styles.circles}>
           {steps?.[currentStepIndex].map((char, index) => {
+            // console.log(char);
             const status = getChartStatus({ index, steps, currentStepIndex });
             const state =
               status === "sorted"

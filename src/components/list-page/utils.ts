@@ -153,44 +153,68 @@ export function addByIndexUpdateArr(linkedList: LinkedList<string>, item: string
   // 5. шаг - вернем конечный результат с обычным состоянием
   
   const newArray1 = updateListArray(linkedList.toArray());
-  
   newArray1[0].head.item = item;
   newArray1[0].head.type = 'circle';
   steps.push(newArray1);
 
-  for(let i = 0; i <= index; i++) {
-    let newArray2 = [...newArray1];
-    if(i === 0) {
-      newArray1[0].head.item = '';
-      newArray1[0].head.type = '';
-    }
-    else {
-      newArray1[i-1].head.item = '';
-      newArray1[i-1].head.type = '';
-      newArray1[i-1].state = ElementStates.Changing;
+  for (let i = 1; i <= index; i++) {
+    let tempArray = updateListArray(linkedList.toArray());
+    tempArray[i - 1].head.item = '';
+    tempArray[i - 1].head.type = '';
+    tempArray[i - 1].state = ElementStates.Changing;
+  
+    tempArray[i].head.item = item;
+    tempArray[i].head.type = 'circle';
 
-      newArray1[i].head.item = item;
-      newArray1[i].head.type = 'circle';
-    }  
-    steps.push(newArray2);
+    steps.push(tempArray); 
   }
 
-  // linkedList.addByIndex(item, index);
+  linkedList.addByIndex(item, index);
   
-  // const newArray3 = updateListArray(linkedList.toArray());
-  // newArray3[index].state = ElementStates.Modified;
-  // for(let i = 0; i < index; i++) {
-  //   newArray3[i].state = ElementStates.Default;
-  // }
-  // steps.push(newArray3);
+  const newArray3 = updateListArray(linkedList.toArray());
+  newArray3[index].state = ElementStates.Modified;
+  for(let i = 0; i < index; i++) {
+    newArray3[i].state = ElementStates.Default;
+  }
+  steps.push(newArray3);
 
-  // const newArray4 = newArray3.map((item, indx) => ({
-  //   ...item,
-  //   state: indx < index ? ElementStates.Default : item.state
-  // }));
+  const newArray4 = newArray3.map((item, indx) => ({
+    ...item,
+    state: indx === index ? ElementStates.Default : item.state
+  }));
+  steps.push(newArray4);
+  
+  return steps;
+}
 
-  steps.push(newArray1, newArray2, newArray3, newArray4);
+export function deleteByIndexUpdateArr(linkedList: LinkedList<string>, index: number): TItem[][] {
+  const steps: TItem[][] = [];
+  // 1. шаг - сохраним исходное состояние списка и добавим информацию, что первый элемент в статусе Changing, а остальные в статусе Default
+  // 2. шаг - доходим до нужного индекса и выделяем его аналогично предыдущим элементам в статусе Changing
+  // 3. шаг  - элемент с нужным индексом переводим в статус Default, записываем туда пустое знаение, и в tail пишем его значение и статус кружка Changing
+  // 4. шаг - удаляем элемент
+  // 5. шаг - вернем конечный результат с обычным состоянием
+  
+  for (let i = 0; i <= index; i++) {
+    let tempArray = updateListArray(linkedList.toArray());
+    tempArray[i].state = ElementStates.Changing;
+    steps.push(tempArray); 
+  }
 
-  console.log(steps);
+  const newArray1 = updateListArray(linkedList.toArray());
+  newArray1[index].state = ElementStates.Default;
+  newArray1[index].tail.type = 'circle';
+  newArray1[index].tail.item = newArray1[index].item;
+  newArray1[index].tail.state = ElementStates.Changing;
+  newArray1[index].item = '';
+  steps.push(newArray1);
+
+  linkedList.deleteByIndex(index);
+  const newArray3 = updateListArray(linkedList.toArray());
+  for(let i = 0; i < index; i++) {
+    newArray3[i].state = ElementStates.Default;
+  }
+  steps.push(newArray3);
+
   return steps;
 }
