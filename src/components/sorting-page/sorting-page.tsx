@@ -21,7 +21,7 @@ export const SortingPage: React.FC = () => {
   const [updatedArray, setUpdatedArray] = useState<TItem[]>([]);
   const [isLoader, setLoader] = useState<boolean>(false);
   const [type, setType] = useState<string>('selection');
-  const [sortDirection, setsortDirection] = useState<string>(Direction.Ascending);
+  const [sortDirection, setSortDirection] = useState<string>('');
 
   React.useEffect(() => {
     getNewArray();
@@ -37,7 +37,7 @@ export const SortingPage: React.FC = () => {
     setUpdatedArray(updatedArray); 
   };
 
-  const sortArray = () => {
+  const sortArray = (sortDirection: string) => {
     setLoader(true);
     const newArr = sortArrayByType(updatedArray, type, sortDirection);
     setNewArr(newArr);
@@ -51,18 +51,18 @@ export const SortingPage: React.FC = () => {
         setUpdatedArray(newArr[step]);
       } else {
         clearInterval(timerId);
-        setsortDirection('');
+        setSortDirection('');
         setLoader(false);
       }
-    }, 500);
-
+    }, 300);
   }
   const onChange = (type: string) => {
     setType(type);
   };
-  const onClick = (sortDirection: string) => {
-    setsortDirection(sortDirection);
-    sortArray();
+
+  const onClick = (sorting: string) => {
+    setSortDirection(sorting);
+    sortArray(sorting); 
   };
   return (
     <SolutionLayout title="Сортировка массива">
@@ -72,13 +72,13 @@ export const SortingPage: React.FC = () => {
             label="Выбор"
             value="selection"
             onChange={() => onChange('selection')}
-            checked={sortDirection === "selection"}
+            checked={type === "selection"}
           />
           <RadioInput
             label="Пузырёк"
             value="bubble"
             onChange={() => onChange('bubble')}
-            checked={sortDirection === "bubble"}
+            checked={type === "bubble"}
           />
         </div>
         <div className={styles.buttons}>

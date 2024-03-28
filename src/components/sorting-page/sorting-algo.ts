@@ -83,6 +83,47 @@ export const selectionSort = (array: TItem[], direction: string) => {
 
 export const bubbleSort = (array: TItem[], direction: string) => {
   const steps: TItem[][] = [];
+  const n = array.length;
+
+  if (direction === "ascending") {
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n - i - 1; j++) {
+        array[j].state = ElementStates.Changing;
+        array[j + 1].state = ElementStates.Changing;
+        steps.push([...array.map((item) => ({ ...item }))]);
+
+        if (array[j].item > array[j + 1].item) {
+          swap(array, j, j + 1);
+          steps.push([...array.map((item) => ({ ...item }))]);
+        }
+
+        array[j].state = ElementStates.Default;
+        array[j + 1].state = ElementStates.Default;
+        steps.push([...array.map((item) => ({ ...item }))]);
+      }
+      array[n - i - 1].state = ElementStates.Modified;
+      steps.push([...array.map((item) => ({ ...item }))]);
+    }
+  } else {
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n - i - 1; j++) {
+        array[j].state = ElementStates.Changing;
+        array[j + 1].state = ElementStates.Changing;
+        steps.push([...array.map((item) => ({ ...item }))]);
+
+        if (array[j].item < array[j + 1].item) {
+          swap(array, j, j + 1);
+          steps.push([...array.map((item) => ({ ...item }))]);
+        }
+
+        array[j].state = ElementStates.Default;
+        array[j + 1].state = ElementStates.Default;
+        steps.push([...array.map((item) => ({ ...item }))]);
+      }
+      array[n - i - 1].state = ElementStates.Modified;
+      steps.push([...array.map((item) => ({ ...item }))]);
+    }
+  }
 
   return steps;
 };
