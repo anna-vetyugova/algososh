@@ -9,7 +9,7 @@ import styles from "../stack-page/stack-page.module.css";
 import { Queue
  } from "./gueue-algo";
 import { ElementStates } from "../../types/element-states";
-
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const QueuePage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -37,7 +37,7 @@ export const QueuePage: React.FC = () => {
       setInputValueIndex(null);
       setInputValue('');
       setLoader(false);
-    }, 500);
+    }, SHORT_DELAY_IN_MS);
   }
 
   const deleteItem = () => {
@@ -55,7 +55,7 @@ export const QueuePage: React.FC = () => {
         setInputValueIndex(null);
         setInputValue('');
         setLoader(false);
-      }, 500);
+      }, SHORT_DELAY_IN_MS);
     }
   }
 

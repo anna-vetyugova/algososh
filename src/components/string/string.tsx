@@ -9,9 +9,13 @@ import styles from "../string/string.module.css";
 import reverseStringWithSteps from "./string-algo";
 import { getChartStatus } from "./utils";
 import { ElementStates } from "../../types/element-states";
+import { DELAY_IN_MS } from "../../constants/delays";
+import { useForm } from "../../hooks/useForm";
 
 export const StringComponent: React.FC = () => {
   const [input, setInput] = useState("");
+
+
   const [steps, setSteps] = useState<string[][] | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isLoader, setLoader] = useState(false);
@@ -31,7 +35,7 @@ export const StringComponent: React.FC = () => {
         return;
       }
       setCurrentStepIndex(++index);
-    }, 1000);
+    }, DELAY_IN_MS);
   };
 
   return (
@@ -45,12 +49,13 @@ export const StringComponent: React.FC = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setInput(e.target.value)
             }
+            value={input}
           />
           <Button
             text={"Развернуть"}
             onClick={startAlgorithm}
             isLoader={isLoader}
-
+            disabled={ input.length ? false : true}
           />
         </div>
         <ul className={styles.circles}>

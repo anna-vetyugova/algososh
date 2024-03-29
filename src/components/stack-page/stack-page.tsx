@@ -8,6 +8,7 @@ import { Circle } from "../ui/circle/circle";
 import styles from "../stack-page/stack-page.module.css";
 import Stack from "./stack";
 import { ElementStates } from "../../types/element-states";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const StackPage: React.FC = () => {
   const [isLoader, setLoader] = useState(false);
@@ -29,7 +30,7 @@ export const StackPage: React.FC = () => {
       setInputValue('');
       setLoader(false);
       setInputValueIndex(null);
-    }, 500);
+    }, SHORT_DELAY_IN_MS);
   };
 
   const deleteItem = () => {
@@ -42,7 +43,7 @@ export const StackPage: React.FC = () => {
         setStackArr(stack.toArray());
         setLoader(false);
         setInputValueIndex(null);
-      }, 500);
+      }, SHORT_DELAY_IN_MS);
 
     }
   };
@@ -54,7 +55,7 @@ export const StackPage: React.FC = () => {
       stack.clear();
       setStackArr(stack.toArray());
       setLoader(false);
-    }, 500);
+    }, SHORT_DELAY_IN_MS);
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {

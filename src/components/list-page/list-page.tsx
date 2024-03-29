@@ -10,6 +10,7 @@ import { LinkedList } from "./list-algo";
 import { ElementStates } from "../../types/element-states";
 import { randomArr } from "../sorting-page/utils";
 import { updateListArray, TItem, addToHeadUpdateArr, addToTailUpdateArr, deleteFromHeadUpdateArr, deleteFromTailUpdateArr, addByIndexUpdateArr, deleteByIndexUpdateArr } from "./utils";
+import { DELAY_IN_MS } from "../../constants/delays";
 
 type Props = {
   fill?: string;
@@ -39,6 +40,7 @@ export const ListPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [indexValue, setIndexValue] = useState<string>("");
   const [isLoader, setLoader] = useState<string>("");
+  const [isDisabled, setDisabled] = useState<boolean>(false);
 
   const [linkedList, setLinkedList] = useState(() => {
     const initialList = new LinkedList<string>();
@@ -66,7 +68,7 @@ export const ListPage: React.FC = () => {
         setInputValue('');
         setLoader('');
       }
-    }, 1000);
+    }, DELAY_IN_MS);
   }
   const addToHeadElement = () => {
     if(linkedList.getSize() === 7) return
@@ -105,10 +107,23 @@ export const ListPage: React.FC = () => {
     setTimer(updatedArray);
   };
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    if(e.target.value.length > 4) {
+      setDisabled(true);
+      return 
+    } else {
+      setInputValue(e.target.value);
+      setDisabled(false);
+    }
+    
   };
   const onChangeIndex = (e: ChangeEvent<HTMLInputElement>) => {
-    setIndexValue(e.target.value);
+    if(parseFloat(e.target.value) < 0 || Number.isInteger(parseFloat(e.target.value)) === false || e.target.value.length > 4) {
+      setDisabled(true);
+      return 
+    } else {
+      setDisabled(false);
+      setIndexValue(e.target.value);
+    }
   };
   return (
     <SolutionLayout title="Связный список">
@@ -145,30 +160,32 @@ export const ListPage: React.FC = () => {
             text={"Удалить из tail"}
             onClick={deleteFromTail}
             isLoader={isLoader === "deleteFromTail" ? true : false}
-            disabled={ inputValue === '' || indexValue === '' || linkedList.getSize() === 7 || isLoader !== '' ? true : false}
+            disabled={ linkedList.getSize() === 1 || isLoader !== '' ? true : false}
           />
         </div>
         <div className={styles.buttons}>
           <Input
-            isLimitText={false}
+            isLimitText={true}
             placeholder="Введите индекс"
             type={"number"}
             onChange={onChangeIndex}
             extraClass={styles.input}
             value={indexValue}
+            max={4}
+            
           />
           <Button
             text={"Добавить по индексу"}
             onClick={insertAtIndex}
             isLoader={isLoader === "insertAtIndex" ? true : false}
-            disabled={indexValue === "" || inputValue === "" || parseInt(indexValue) < 0 || isLoader !== '' ? true : false}
+            disabled={indexValue === "" || inputValue === "" || isDisabled || isLoader !== '' ? true : false}
             extraClass={styles.button}
           />
           <Button
             text={"Удалить по индексу"}
             onClick={deleteAtIndex}
             isLoader={isLoader === "deleteAtIndex" ? true : false}
-            disabled={indexValue === ""  || parseInt(indexValue) < 0 || isLoader !== '' ? true : false}
+            disabled={indexValue === ""  || isDisabled || isLoader !== '' ? true : false}
             extraClass={styles.button}
           />
         </div>

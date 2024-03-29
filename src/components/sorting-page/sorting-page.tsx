@@ -10,6 +10,7 @@ import { Column } from "../ui/column/column";
 import { useState } from "react";
 import { ElementStates } from "../../types/element-states";
 import { sortArrayByType } from "./sorting-algo";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export type TItem = {
   item: number;
@@ -19,7 +20,7 @@ export type TItem = {
 export const SortingPage: React.FC = () => {
   const [newArr, setNewArr] = useState<TItem[][]>([]);
   const [updatedArray, setUpdatedArray] = useState<TItem[]>([]);
-  const [isLoader, setLoader] = useState<boolean>(false);
+  const [isLoader, setLoader] = useState<string>('');
   const [type, setType] = useState<string>('selection');
   const [sortDirection, setSortDirection] = useState<string>('');
 
@@ -38,7 +39,7 @@ export const SortingPage: React.FC = () => {
   };
 
   const sortArray = (sortDirection: string) => {
-    setLoader(true);
+    setLoader(sortDirection);
     const newArr = sortArrayByType(updatedArray, type, sortDirection);
     setNewArr(newArr);
 
@@ -52,9 +53,9 @@ export const SortingPage: React.FC = () => {
       } else {
         clearInterval(timerId);
         setSortDirection('');
-        setLoader(false);
+        setLoader('');
       }
-    }, 500);
+    }, SHORT_DELAY_IN_MS);
   }
   const onChange = (type: string) => {
     setType(type);
@@ -88,7 +89,7 @@ export const SortingPage: React.FC = () => {
             extraClass={styles.button}
             onClick={() => onClick('ascending')}
             disabled={isLoader ? true : false}
-            isLoader={isLoader ? true: false}
+            isLoader={isLoader === 'ascending' ? true: false}
           />
           <Button
             text={"По убыванию"}
@@ -96,14 +97,14 @@ export const SortingPage: React.FC = () => {
             extraClass={styles.button}
             onClick={() => onClick('descending')}
             disabled={isLoader ? true : false}
-            isLoader={isLoader ? true: false}
+            isLoader={isLoader === 'descending' ? true: false}
           />
         </div>
         <Button
           text={"Новый массив"}
           extraClass={styles.button}
           onClick={getNewArray}
-          isLoader={isLoader ? true: false}
+          disabled={isLoader ? true: false}
         />
       </div>
       <ul className={styles.array}>

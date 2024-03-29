@@ -7,11 +7,11 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import styles from "../fibonacci-page/fibonacci-page.module.css";
 import { fibbonacchiNumber } from "./fibonacci-algo";
+import { DELAY_IN_MS } from "../../constants/delays";
 
 export const FibonacciPage: React.FC = () => {
   const [isLoader, setLoader] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
-  const [isError, setError] = useState(false);
 
   const [input, setInput] = useState<number>(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -31,15 +31,15 @@ export const FibonacciPage: React.FC = () => {
         return;
       }
       setCurrentStepIndex(++index);
-    }, 1000);
+    }, DELAY_IN_MS);
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     if(parseFloat(e.target.value) < 0 || Number.isInteger(parseFloat(e.target.value)) === false) {
-      setError(true);
+      setDisabled(true);
       return 
     } else {
-      setError(false);
+      setDisabled(false);
       setInput(parseInt(e.target.value));
     }
   }
@@ -49,19 +49,19 @@ export const FibonacciPage: React.FC = () => {
         <div className={styles.main}>
           <div className={styles.inputContainer}>
             <Input
-              isLimitText={true}  
               max={19}
+              maxLength={19}
               placeholder='Введите число'
               type={'number'}
               onChange={onChange}
+              value={input}
             />
-            { isError && <span className={styles.error}>Для ввода допустимы только положительные целые числа!</span> }
           </div>
           <Button
             text={"Развернуть"}
             onClick={startAlgorithm}
             isLoader={isLoader}
-            disabled={isDisabled}
+            disabled={ input.toString().length > 2 ||  input > 19 || isDisabled ? true : false}
           />
         </div>
         <ul className={styles.circles}>
