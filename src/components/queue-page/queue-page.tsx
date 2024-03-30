@@ -16,7 +16,7 @@ export const QueuePage: React.FC = () => {
   const [inputValueIndex, setInputValueIndex] = useState<number | null>(null);
   const [queue, setQueue] = useState(() => new Queue<string>(7));
   const [queueArr, setQueueArr] = useState<(string)[]>([]);
-  const [isLoader, setLoader] = useState(false);
+  const [isLoader, setLoader] = useState<string>('');
 
   React.useEffect(() => {
     const arr: string[] = new Array(7).fill('');
@@ -25,7 +25,7 @@ export const QueuePage: React.FC = () => {
 
   const addItem = () => {
     if (!inputValue.length) return;
-    setLoader(true);
+    setLoader('addItem');
     
     queue.enqueue(inputValue);
     const index = queue.getLastAddedIndex();
@@ -36,13 +36,13 @@ export const QueuePage: React.FC = () => {
     setQueueArr(newArr); 
       setInputValueIndex(null);
       setInputValue('');
-      setLoader(false);
+      setLoader('');
     }, SHORT_DELAY_IN_MS);
   }
 
   const deleteItem = () => {
     if (queueArr && queueArr.length > 0) {
-      setLoader(true);
+      setLoader('deleteItem');
       
       queue.dequeue();
       const index = queue.getLastDeletedIndex();
@@ -54,14 +54,18 @@ export const QueuePage: React.FC = () => {
       setQueueArr(newArr); 
         setInputValueIndex(null);
         setInputValue('');
-        setLoader(false);
+        setLoader('');
       }, SHORT_DELAY_IN_MS);
     }
   }
 
   const deleteQueue = () => {
-    queue.clear();
-    setQueueArr(queue.toArray());
+    setLoader('deleteQueue');
+    setTimeout(() => {
+      queue.clear();
+      setQueueArr(queue.toArray());
+      setLoader('');
+      }, SHORT_DELAY_IN_MS);
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -86,20 +90,21 @@ export const QueuePage: React.FC = () => {
             <Button
               text={"Добавить"}
               onClick={addItem}
-              disabled={inputValue.length > 0 ? false : true}
-              isLoader={isLoader ? true : false}
+              disabled={inputValue.length === 0 || isLoader ? true : false}
+              isLoader={isLoader === 'addItem' ? true : false}
             />
             <Button
               text={"Удалить"}
               onClick={deleteItem}
-              disabled={queue.getLength() > 0 ? false : true}
-              isLoader={isLoader ? true : false}
+              disabled={queue.getLength() === 0 || isLoader ? true : false}
+              isLoader={isLoader === 'deleteItem' ? true : false}
             />
           </div>
           <Button
             text={"Очистить"}
             onClick={deleteQueue}
-            isLoader={isLoader ? true : false}
+            isLoader={isLoader === 'deleteQueue' ? true : false}
+            disabled={isLoader ? true : false}
           />         
         </div>
         <ul className={styles.circles}>

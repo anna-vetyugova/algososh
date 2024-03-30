@@ -11,7 +11,7 @@ import { ElementStates } from "../../types/element-states";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const StackPage: React.FC = () => {
-  const [isLoader, setLoader] = useState(false);
+  const [isLoader, setLoader] = useState<string>('');
   const [stack, setStack] = useState(() => new Stack<string>());
   const [inputValue, setInputValue] = useState<string>('');
   const [inputValueIndex, setInputValueIndex] = useState<number | null>(null);
@@ -19,7 +19,7 @@ export const StackPage: React.FC = () => {
 
   const addItem = () => {
     if (!inputValue.length) return;
-    setLoader(true);
+    setLoader('addItem');
     
     stack.push(inputValue);
     const newArr = stack.toArray();
@@ -28,20 +28,20 @@ export const StackPage: React.FC = () => {
 
     setTimeout(() => {
       setInputValue('');
-      setLoader(false);
+      setLoader('');
       setInputValueIndex(null);
     }, SHORT_DELAY_IN_MS);
   };
 
   const deleteItem = () => {
     if (stack.getSize() > 0) {
-      setLoader(true);
+      setLoader('deleteItem');
       if(stackArr) setInputValueIndex(stackArr.length); 
 
       setTimeout(() => {
         stack.pop();
         setStackArr(stack.toArray());
-        setLoader(false);
+        setLoader('');
         setInputValueIndex(null);
       }, SHORT_DELAY_IN_MS);
 
@@ -49,12 +49,12 @@ export const StackPage: React.FC = () => {
   };
 
   const deleteStack = () => {
-    setLoader(true);
+    setLoader('deleteStack');
 
     setTimeout(() => {
       stack.clear();
       setStackArr(stack.toArray());
-      setLoader(false);
+      setLoader('');
     }, SHORT_DELAY_IN_MS);
   };
 
@@ -81,21 +81,21 @@ export const StackPage: React.FC = () => {
             <Button
               text={"Добавить"}
               onClick={addItem}
-              isLoader={isLoader}
-              disabled={inputValue.length === 0 ? true : false}
+              isLoader={isLoader === 'addItem' ? true : false}
+              disabled={inputValue.length === 0 || isLoader ? true : false}
             />
             <Button
               text={"Удалить"}
               onClick={deleteItem}
-              isLoader={isLoader}
-              disabled={stack.getSize() > 0 ? false : true}
+              isLoader={isLoader === 'deleteItem' ? true : false}
+              disabled={stack.getSize() === 0 || isLoader ? true : false}
             />
           </div>
           <Button
             text={"Очистить"}
             onClick={deleteStack}
-            isLoader={isLoader}
-            disabled={stack.getSize() > 0 ? false : true}
+            isLoader={isLoader === 'deleteStack' ? true : false}
+            disabled={stack.getSize() === 0 || isLoader ? true : false}
           />         
         </div>
         <ul className={styles.circles}>

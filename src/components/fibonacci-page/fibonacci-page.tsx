@@ -13,12 +13,12 @@ export const FibonacciPage: React.FC = () => {
   const [isLoader, setLoader] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
 
-  const [input, setInput] = useState<number>(0);
+  const [input, setInput] = useState<string>('');
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [steps, setSteps] = useState<number[] | null>(null);
 
   const startAlgorithm = () => {
-    const newSteps: number[] = fibbonacchiNumber(input);
+    const newSteps: number[] = fibbonacchiNumber(parseInt(input));
     setSteps(newSteps);
     setLoader(true);
     setCurrentStepIndex(0);
@@ -34,14 +34,14 @@ export const FibonacciPage: React.FC = () => {
     }, DELAY_IN_MS);
   }
 
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if(parseFloat(e.target.value) < 0 || Number.isInteger(parseFloat(e.target.value)) === false) {
+    if(Number.isInteger(parseFloat(e.target.value)) === false) {
       setDisabled(true);
-      return 
     } else {
       setDisabled(false);
-      setInput(parseInt(e.target.value));
     }
+    setInput(e.target.value);
   }
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
@@ -49,7 +49,9 @@ export const FibonacciPage: React.FC = () => {
         <div className={styles.main}>
           <div className={styles.inputContainer}>
             <Input
+              isLimitText={true}
               max={19}
+              min={1}
               maxLength={19}
               placeholder='Введите число'
               type={'number'}
@@ -61,7 +63,7 @@ export const FibonacciPage: React.FC = () => {
             text={"Развернуть"}
             onClick={startAlgorithm}
             isLoader={isLoader}
-            disabled={ input.toString().length > 2 ||  input > 19 || isDisabled ? true : false}
+            disabled={ input.length > 2 ||  parseInt(input) > 19 || isDisabled ? true : false}
           />
         </div>
         <ul className={styles.circles}>

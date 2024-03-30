@@ -66,6 +66,7 @@ export const ListPage: React.FC = () => {
       } else {
         clearInterval(timerId);
         setInputValue('');
+        if (indexValue !== '') setIndexValue('');
         setLoader('');
       }
     }, DELAY_IN_MS);
@@ -107,23 +108,16 @@ export const ListPage: React.FC = () => {
     setTimer(updatedArray);
   };
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if(e.target.value.length > 4) {
-      setDisabled(true);
-      return 
-    } else {
-      setInputValue(e.target.value);
-      setDisabled(false);
-    }
-    
+    setInputValue(e.target.value);
   };
   const onChangeIndex = (e: ChangeEvent<HTMLInputElement>) => {
-    if(parseFloat(e.target.value) < 0 || Number.isInteger(parseFloat(e.target.value)) === false || e.target.value.length > 4) {
+    const newIndex = parseFloat(e.target.value);
+    if( Number.isInteger(newIndex) === false ) {
       setDisabled(true);
-      return 
     } else {
       setDisabled(false);
-      setIndexValue(e.target.value);
     }
+    setIndexValue(e.target.value);
   };
   return (
     <SolutionLayout title="Связный список">
@@ -165,14 +159,13 @@ export const ListPage: React.FC = () => {
         </div>
         <div className={styles.buttons}>
           <Input
-            isLimitText={true}
             placeholder="Введите индекс"
             type={"number"}
             onChange={onChangeIndex}
             extraClass={styles.input}
             value={indexValue}
-            max={4}
-            
+            min={0}
+            max={list && list.length-1}
           />
           <Button
             text={"Добавить по индексу"}
