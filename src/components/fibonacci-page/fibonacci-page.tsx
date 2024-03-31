@@ -63,7 +63,7 @@ export const FibonacciPage: React.FC = () => {
             text={"Развернуть"}
             onClick={startAlgorithm}
             isLoader={isLoader}
-            disabled={ input.length > 2 ||  parseInt(input) > 19 || isDisabled ? true : false}
+            disabled={ input.length > 2 ||  parseInt(input) > 19 || isDisabled ||  parseInt(input) < 0 ? true : false}
           />
         </div>
         <ul className={styles.circles}>

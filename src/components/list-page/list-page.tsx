@@ -112,7 +112,7 @@ export const ListPage: React.FC = () => {
   };
   const onChangeIndex = (e: ChangeEvent<HTMLInputElement>) => {
     const newIndex = parseFloat(e.target.value);
-    if( Number.isInteger(newIndex) === false ) {
+    if( Number.isInteger(newIndex) === false || newIndex < 0 ) {
       setDisabled(true);
     } else {
       setDisabled(false);
@@ -171,14 +171,14 @@ export const ListPage: React.FC = () => {
             text={"Добавить по индексу"}
             onClick={insertAtIndex}
             isLoader={isLoader === "insertAtIndex" ? true : false}
-            disabled={indexValue === "" || inputValue === "" || isDisabled || isLoader !== '' ? true : false}
+            disabled={indexValue === "" || inputValue === "" || isDisabled || isLoader !== '' ||  (list && parseInt(indexValue) > list.length-1) ? true : false}
             extraClass={styles.button}
           />
           <Button
             text={"Удалить по индексу"}
             onClick={deleteAtIndex}
             isLoader={isLoader === "deleteAtIndex" ? true : false}
-            disabled={indexValue === ""  || isDisabled || isLoader !== '' ? true : false}
+            disabled={indexValue === ""  || isDisabled || isLoader !== '' ||  (list && parseInt(indexValue) > list.length-1) ? true : false}
             extraClass={styles.button}
           />
         </div>
