@@ -1,0 +1,28 @@
+.container {
+  margin: 0 225px;
+}
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.inputContainer {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.input {
+  width: 377px;
+}
+
+
+.circles {
+  display: flex;
+  gap: 16px;
+  margin-top: 48px;
+  max-width: 944px;
+  justify-content: center;
+}
+.circle {
+  list-style: none;
+}
