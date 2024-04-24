@@ -11,7 +11,7 @@ import { DELAY_IN_MS } from "../../constants/delays";
 
 export const FibonacciPage: React.FC = () => {
   const [isLoader, setLoader] = useState(false);
-  const [isDisabled, setDisabled] = useState(false);
+  const [isDisabled, setDisabled] = useState(true);
 
   const [input, setInput] = useState<string>('');
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
