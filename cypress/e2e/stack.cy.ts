@@ -1,4 +1,16 @@
-describe("stack alog", function () {
+import { contains } from "cypress/types/jquery";
+import {
+  CHANGING_STATE,
+  DEFAULT_STATE,
+  INPUT,
+  CIRCLE_HEAD,
+  CIRCLE_TAIL,
+  CIRCLE_MAIN,
+  ADD_BUTTON,
+  DELETE_BUTTON
+} from "../constants";
+
+describe("Stack algo", function () {
   beforeEach(() => {
     cy.visit("/");
     cy.contains("МБОУ АЛГОСОШ");
@@ -7,60 +19,87 @@ describe("stack alog", function () {
   });
 
   it("should disable button if input is empty", function () {
-    cy.get('input[class*="input_input"]').should("have.value", "");
-    cy.contains("Добавить").should("be.disabled");
+    cy.get(INPUT).should("have.value", "");
+    cy.contains(ADD_BUTTON).should("be.disabled");
   });
 
   it("should add new element to the stack", function () {
-    cy.get('input[class*="input_input"]').should("have.value", "");
-    cy.contains("Добавить").should("be.disabled");
-  
-    cy.get('input[class*="input_input"]').type('1');
-    cy.contains("Добавить").should("be.enabled").click();
-  
-    cy.get('div[class*="circle_circle"]')  
-    .should('be.visible')      
-    .its('length')           
-    .then((count) => {
-      cy.get('div[class*="circle_circle"]').each(($el, index, $divs) => {
-        cy.clock();
-        cy.wrap($el).should("have.css", "border-color", "rgb(210, 82, 225)");
-        cy.get('div[class*="circle_head"]').contains('top');
-        cy.get('div[class*="circle_tail"]').contains(index);
-          if(index === count) {
-            cy.tick(500);
-            cy.wrap($el).should("have.css", "border-color", "rgb(0, 50, 255)");
-          }
-        })
-      });
-  });
-  it("should delete element from the stack", function () {
+    cy.get(INPUT).should("have.value", "");
+    cy.contains(ADD_BUTTON).should("be.disabled");
     cy.clock();
-    cy.get('ul').then(($container) => {
-      const numberOfElements = $container.find('li').length;
-      if (numberOfElements === 0) {
-        cy.contains("Удалить").should("be.disabled");
-      }
-      else {
-      
-        const numberOfElements = $container.find('li').length;
-        cy.get('div[class*="circle_circle"]').each(($el, index, $divs) => {
-          
-            if(index === numberOfElements) {
-              cy.wrap($el).should("have.css", "border-color", "rgb(210, 82, 225)");
-              cy.contains("Удалить").should("be.enabled").click();
-              
-            }
-            if(index === numberOfElements - 1) {
-              cy.wrap($el).should("have.css", "border-color", "rgb(0, 50, 255)");
-              cy.get('div[class*="circle_head"]').contains('top');
-              cy.get('div[class*="circle_tail"]').contains(index);
-            }
-            cy.tick(500);
-          })
-      }
-      
-    });
+
+    cy.get(INPUT).type("1");
+    cy.contains(ADD_BUTTON).should("be.enabled").click();
+
+    cy.get(CIRCLE_MAIN).should('have.length', 1);
+    cy.get(CIRCLE_MAIN).should("have.css", "border-color", CHANGING_STATE); 
+    cy.get(CIRCLE_HEAD).contains('top');
+    cy.get(CIRCLE_TAIL).contains('0');
+    cy.tick(1000);
+
+    cy.get(CIRCLE_MAIN).should("have.css", "border-color", DEFAULT_STATE);
+    cy.tick(1000);
+
+    cy.get(INPUT).type("2");
+    cy.contains(ADD_BUTTON).should("be.enabled").click();
+    cy.get(CIRCLE_MAIN).should('have.length', 2);
+
+    cy.get(CIRCLE_MAIN).each(($el, index)=>{
+      cy.get(CIRCLE_MAIN).its('length').then(count => {
+        // cy.log(`count: ${count}`);
+        // cy.log(`index: ${index}`);
+        if(count === index + 1) {
+          cy.wrap($el).should("have.css", "border-color", CHANGING_STATE); 
+          cy.wrap($el).get(CIRCLE_HEAD).contains('top');
+          cy.wrap($el).get(CIRCLE_TAIL).contains('1');
+
+          cy.tick(1000);
+          cy.wrap($el).get(CIRCLE_MAIN).should("have.css", "border-color", DEFAULT_STATE);
+        }       
+      });
+    })
   });
 
+  it("should delete element from the stack", function () {
+    cy.get(INPUT).type("1");
+    cy.contains(ADD_BUTTON).should("be.enabled").click();
+    cy.get(CIRCLE_MAIN).should('have.length', 1);
+
+    cy.clock();
+    cy.contains(DELETE_BUTTON).should("be.enabled").click();
+    cy.get(CIRCLE_MAIN).should("have.css", "border-color", CHANGING_STATE);
+    cy.tick(1000);
+    cy.get('ul[class*="stack-page_circles"]').should('not.be.visible');
+    cy.contains(DELETE_BUTTON).should("be.disabled")
+    
+    cy.get(INPUT).type("1");
+    cy.contains(ADD_BUTTON).should("be.enabled").click();
+    cy.get(CIRCLE_MAIN).should('have.length', 1);
+    cy.tick(1000);
+
+    cy.get(INPUT).type("2");
+    cy.contains(ADD_BUTTON).should("be.enabled").click();
+    cy.get(CIRCLE_MAIN).should('have.length', 2);
+    cy.tick(1000);
+
+
+    cy.contains(DELETE_BUTTON).should("be.enabled").click();
+    cy.get(CIRCLE_MAIN).each(($el, index)=>{
+      cy.get(CIRCLE_MAIN).its('length').then(count => {
+        // cy.log(`count: ${count}`);
+        cy.log(`index: ${index}`);
+        if(index === count - 1) {
+          cy.wrap($el).should("have.css", "border-color", CHANGING_STATE); 
+          cy.wrap($el).get(CIRCLE_TAIL).contains('1');
+
+          cy.tick(1000);
+          cy.wrap($el).get(CIRCLE_MAIN).should("have.css", "border-color", DEFAULT_STATE);
+          cy.wrap($el).get(CIRCLE_HEAD).contains('top');
+          cy.wrap($el).get(CIRCLE_TAIL).contains('0');
+        }       
+      });
+    })
+
+
+  });
 });

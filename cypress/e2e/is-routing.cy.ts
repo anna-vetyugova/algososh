@@ -1,4 +1,4 @@
-describe('app works correctly with routes', function() {
+describe('App works correctly with routes', function() {
   beforeEach(() => {
     cy.visit('/');
     cy.contains('МБОУ АЛГОСОШ');
