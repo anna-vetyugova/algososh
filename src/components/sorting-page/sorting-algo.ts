@@ -17,16 +17,20 @@ export const sortArrayByType = (
   direction: string
 ) => {
   let result: TItem[][] = [];
-  if (type === "selection") {
-    result = selectionSort(array, direction);
-  } else {
-    result = bubbleSort(array, direction);
-  }
+    if (type === "selection") {
+      result = selectionSort(array, direction);
+    } else {
+      result = bubbleSort(array, direction);
+    }
   return result;
 };
 
 export const selectionSort = (array: TItem[], direction: string) => {
+  if (array.length === 0) {
+    return [];
+  }
   const steps: TItem[][] = [];
+
   if (direction === "ascending") {
     const n = array.length;
     for (let i = 0; i < n; i++) {
@@ -77,7 +81,6 @@ export const selectionSort = (array: TItem[], direction: string) => {
       steps.push([...array.map((item) => ({ ...item }))]);
     }
   }
-
   return steps;
 };
 
@@ -124,6 +127,6 @@ export const bubbleSort = (array: TItem[], direction: string) => {
       steps.push([...array.map((item) => ({ ...item }))]);
     }
   }
-
+  // console.log(steps);
   return steps;
 };

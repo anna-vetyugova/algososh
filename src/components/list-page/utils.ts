@@ -130,7 +130,7 @@ export function deleteFromTailUpdateArr(linkedList: LinkedList<string>): TItem[]
   // 1. шаг - сохраним исходное состояние списка и добавим информацию, что последний элемент пустой и будет в кружке
   // 2. шаг -  вернем конечный результат с обычным состоянием
   const newArray1 = updateListArray(linkedList.toArray());
-  newArray1[newArray1.length-1].tail.item = newArray1[0].item;
+  newArray1[newArray1.length-1].tail.item = newArray1[newArray1.length-1].item;
   newArray1[newArray1.length-1].tail.type = 'circle';
   newArray1[newArray1.length-1].item = '';
 
