@@ -11,7 +11,7 @@ import {
   DELETE_BUTTON,
   CLEAR_BUTTON
 } from "../constants";
-
+import { DELAY_IN_MS } from "../constants";
 
 describe("Queue algo", function () {
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe("Queue algo", function () {
   it("should add new element to the queue", function () {
     cy.get(INPUT).should("have.value", "");
     cy.contains(ADD_BUTTON).should("be.disabled");
-    cy.clock();
+
 
     cy.get(INPUT).type("1");
     cy.contains(ADD_BUTTON).should("be.enabled").click();
@@ -37,11 +37,11 @@ describe("Queue algo", function () {
     cy.get(CIRCLE_HEAD).first().should('have.text', "head");
     cy.get(CIRCLE_TAIL).first().should('have.text', "tail");
     cy.get(CIRCLE_INDEX).first().contains(0);
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
 
     cy.get(CIRCLE_MAIN).first().should('have.text', "1");
     cy.get(CIRCLE_MAIN).first().should("have.css", "border-color", DEFAULT_STATE);
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
 
     cy.get(INPUT).type("2");
     cy.contains(ADD_BUTTON).should("be.enabled").click();
@@ -56,7 +56,7 @@ describe("Queue algo", function () {
         cy.wrap($el).get(CIRCLE_TAIL).should('have.text', "tail");
         cy.wrap($el).get(CIRCLE_INDEX).contains(1);
 
-        cy.tick(1000);
+        cy.wait(DELAY_IN_MS);
         cy.wrap($el).should('have.text', "2");
         cy.wrap($el).should("have.css", "border-color", DEFAULT_STATE);
       }     
@@ -64,42 +64,40 @@ describe("Queue algo", function () {
   });
 
   it("should delete element from the queue", function () {
-    cy.clock();
     cy.get(INPUT).type("1");
     cy.contains(ADD_BUTTON).should("be.enabled").click(); 
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
     cy.get(INPUT).type("2");
     cy.contains(ADD_BUTTON).should("be.enabled").click();
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
 
     cy.contains(DELETE_BUTTON).should("be.enabled").click();
   
     cy.get(CIRCLE_MAIN).first().should("have.css", "border-color", CHANGING_STATE);
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_HEAD).first().should('have.text', "");
     cy.get(CIRCLE_TAIL).first().should('have.text', "");
     cy.get(CIRCLE_MAIN).first().should('have.text', "");
 
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_MAIN).first().should("have.css", "border-color", DEFAULT_STATE);
     cy.get(CIRCLE_MAIN).first().next().get(CIRCLE_HEAD).should('have.text', "head");
 
   });
 
   it.only("should clear the queue", function () {
-    cy.clock();
     cy.get(INPUT).type("1");
     cy.contains(ADD_BUTTON).should("be.enabled").click(); 
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
     cy.get(INPUT).type("2");
     cy.contains(ADD_BUTTON).should("be.enabled").click();
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
     cy.get(INPUT).type("3");
     cy.contains(ADD_BUTTON).should("be.enabled").click();
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
 
     cy.contains(CLEAR_BUTTON).should("be.enabled").click();
-    cy.tick(1000);
+    cy.wait(DELAY_IN_MS);
 
     cy.get(CIRCLE_MAIN).each(($el, index)=>{
       if(index === 0) cy.wrap($el).get(CIRCLE_HEAD).should('be.empty');

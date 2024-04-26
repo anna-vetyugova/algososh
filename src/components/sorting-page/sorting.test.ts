@@ -11,114 +11,84 @@ describe("Seclection sort algorithm", () => {
     expect(result).toEqual([]);
   });
 
-  it("works with array of one element", () => {
+  it("works with array of several elements", () => {
     const testArray: TItem[] = [
-      {
-        "item": 1,
-        "state": ElementStates.Default,
-      },
+      { "item": 73, "state": ElementStates.Default },
+      { "item": 29, "state": ElementStates.Default }
     ];
-    const result = selectionSort(testArray, "ascending");
-    expect(result).toEqual([
-      [
-        {
-          "item": 1,
-          "state": ElementStates.Changing,
-        },
-      ],
-      [
-        {
-          "item": 1,
-          "state": ElementStates.Modified,
-        },
-      ],
+    const steps = selectionSort(testArray, "ascending");
+
+    expect(steps.length).toBeGreaterThan(0); 
+    steps.forEach(step => {
+      expect(step.length).toBe(testArray.length); 
+    });
+
+    expect(steps).toEqual([
+      [ { item: 73, state: 'changing' }, { item: 29, state: 'default' } ],                                                                                                                                     
+      [ { item: 73, state: 'changing' }, { item: 29, state: 'changing' } ],                                                                                                                                    
+      [ { item: 29, state: 'changing' }, { item: 73, state: 'changing' } ],                                                                                                                                    
+      [ { item: 29, state: 'changing' }, { item: 73, state: 'default' } ],
+      [ { item: 29, state: 'modified' }, { item: 73, state: 'default' } ],
+      [ { item: 29, state: 'modified' }, { item: 73, state: 'changing' } ],
+      [ { item: 29, state: 'modified' }, { item: 73, state: 'modified' } ]
     ]);
   });
 
+  it("works with array of one element", () => {
+    const testArray: TItem[] = [
+      { "item": 73, "state": ElementStates.Default }
+    ];
+    const steps = selectionSort(testArray, "ascending");
+    console.log(steps)
+    expect(steps.length).toBeGreaterThan(0); 
+
+    expect(steps).toEqual([
+      [ { item: 73, state: 'changing' } ],                                                                                                                                                                     
+      [ { item: 73, state: 'modified' } ] 
+    ]);
+  });
+
+});
+
+
+describe("Bubble sort algorithm", () => {
+  it("works with empty array", () => {
+    const testArray: TItem[] = [];
+    const result = bubbleSort(testArray, "ascending");
+    expect(result).toEqual([]);
+  });
 
   it("works with array of several elements", () => {
     const testArray: TItem[] = [
-      {
-          "item": 29,
-          "state": ElementStates.Default
-      },
-      {
-          "item": 73,
-          "state": ElementStates.Default
-      }
+      { "item": 73, "state": ElementStates.Default },
+      { "item": 29, "state": ElementStates.Default }
     ];
-    const result = selectionSort(testArray, "ascending");
-    expect(result).toEqual([
-        [
-            {
-                "item": 73,
-                "state": "changing"
-            },
-            {
-                "item": 29,
-                "state": "default"
-            }
-        ],
-        [
-            {
-                "item": 73,
-                "state": "changing"
-            },
-            {
-                "item": 29,
-                "state": "changing"
-            }
-        ],
-        [
-            {
-                "item": 29,
-                "state": "changing"
-            },
-            {
-                "item": 73,
-                "state": "changing"
-            }
-        ],
-        [
-            {
-                "item": 29,
-                "state": "changing"
-            },
-            {
-                "item": 73,
-                "state": "default"
-            }
-        ],
-        [
-            {
-                "item": 29,
-                "state": "modified"
-            },
-            {
-                "item": 73,
-                "state": "default"
-            }
-        ],
-        [
-            {
-                "item": 29,
-                "state": "modified"
-            },
-            {
-                "item": 73,
-                "state": "changing"
-            }
-        ],
-        [
-            {
-                "item": 29,
-                "state": "modified"
-            },
-            {
-                "item": 73,
-                "state": "modified"
-            }
-        ]
+    const steps = bubbleSort(testArray, "ascending");
+
+    expect(steps.length).toBeGreaterThan(0); 
+    steps.forEach(step => {
+      expect(step.length).toBe(testArray.length); 
+    });
+
+    expect(steps).toEqual([
+      [ { item: 73, state: 'changing' }, { item: 29, state: 'changing' } ],                                                                                                                                    
+      [ { item: 29, state: 'changing' }, { item: 73, state: 'changing' } ],                                                                                                                                    
+      [ { item: 29, state: 'default' }, { item: 73, state: 'default' } ],                                                                                                                                      
+      [ { item: 29, state: 'default' }, { item: 73, state: 'modified' } ],
+      [ { item: 29, state: 'modified' }, { item: 73, state: 'modified' } ]
     ]);
   });
+
+  it("works with array of one element", () => {
+    const testArray: TItem[] = [
+      { "item": 73, "state": ElementStates.Default }
+    ];
+    const steps = bubbleSort(testArray, "ascending");
+    expect(steps.length).toBeGreaterThan(0); 
+
+    expect(steps).toEqual([
+      [ { item: 73, state: 'modified' } ] 
+    ]);
+  });
+
 });

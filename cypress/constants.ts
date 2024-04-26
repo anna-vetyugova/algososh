@@ -9,8 +9,14 @@ export const CIRCLE_HEAD = 'div[class*="circle_head"]';
 export const CIRCLE_TAIL = 'div[class*="circle_tail"]';
 export const CIRCLE_MAIN = 'div[class*="circle_circle"]'
 export const CIRCLE_INDEX ='p[class*="circle_index"]';
+export const CIRCLE_LETTER = 'p[class*="circle_letter"]';
+export const CIRCLE_SMALL = 'div[class*="circle_small"]';
+
 
 export const ADD_BUTTON = 'Добавить';
 export const DELETE_BUTTON = 'Удалить';
 export const REVERSE_BUTTON = 'Развернуть';
 export const CLEAR_BUTTON = 'Очистить';
+
+export const DELAY_IN_MS = 1000;
+export const SHORT_DELAY_IN_MS = 500;

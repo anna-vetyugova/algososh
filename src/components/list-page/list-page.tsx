@@ -93,6 +93,7 @@ export const ListPage: React.FC = () => {
     if(linkedList.getSize() === 1) return
     setLoader("deleteFromTail");
     const updatedArray = deleteFromTailUpdateArr(linkedList);
+    console.log(updatedArray);
     setTimer(updatedArray);
   };
   const insertAtIndex = () => {

@@ -5,6 +5,7 @@ import {
   CIRCLE_INDEX,
   REVERSE_BUTTON
 } from "../constants";
+import { DELAY_IN_MS } from "../constants";
 
 describe("Fibonacci algo", function () {
   beforeEach(() => {
@@ -25,7 +26,6 @@ describe("Fibonacci algo", function () {
     cy.get(INPUT_NUMBER).should("have.value", '3');
     
     cy.contains(REVERSE_BUTTON).should("be.enabled").click();
-    cy.clock();
     
     cy.get(CIRCLE_MAIN).should("have.length", 1).each(($el, index, $divs) => {
       if(index === 0) {
@@ -33,21 +33,21 @@ describe("Fibonacci algo", function () {
         cy.get(CIRCLE_INDEX).contains(0);
       }
     });
-    cy.tick(500);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_MAIN).should("have.length", 2).each(($el, index, $divs) => {
       if(index === 1) {
         cy.wrap($el).contains("1");
         cy.get(CIRCLE_INDEX).contains(1);
       }
     });
-    cy.tick(500);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_MAIN).should("have.length", 3).each(($el, index, $divs) => {
       if(index === 2) {
         cy.wrap($el).contains("2");
         cy.get(CIRCLE_INDEX).contains(2);
       }
     });
-    cy.tick(500);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_MAIN).should("have.length", 4).each(($el, index, $divs) => {
       if(index === 3) {
         cy.wrap($el).contains("3");

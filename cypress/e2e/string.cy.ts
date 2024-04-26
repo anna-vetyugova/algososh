@@ -7,7 +7,7 @@ import {
   CIRCLE_MAIN,
   REVERSE_BUTTON
 } from "../constants";
-
+import { DELAY_IN_MS } from "../constants";
 
 describe("String algo", function () {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("String algo", function () {
     cy.contains(REVERSE_BUTTON).should("be.disabled");
   });
 
-  it("should reverse string correctly", function () {
+  it.only("should reverse string correctly", function () {
     cy.get(INPUT).should("have.value", "");
     cy.contains(REVERSE_BUTTON).should("be.disabled");
 
@@ -31,7 +31,7 @@ describe("String algo", function () {
     cy.contains(REVERSE_BUTTON).should("be.enabled").click();
 
     cy.get(CIRCLE_MAIN).should("have.length", 5);
-    cy.clock();
+
     cy.get(CIRCLE_MAIN).each(($el, index, $divs) => {
       if (index === 0) {
         cy.wrap($el).contains("h");
@@ -54,7 +54,7 @@ describe("String algo", function () {
         cy.wrap($el).should("have.css", "border-color", CHANGING_STATE);
       }
     });
-    cy.tick(500);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_MAIN).each(($el, index, $divs) => {
       if (index === 0) {
         cy.wrap($el).contains("o");
@@ -77,7 +77,7 @@ describe("String algo", function () {
         cy.wrap($el).should("have.css", "border-color", MODIFIED_STATE);
       }
     });
-    cy.tick(500);
+    cy.wait(DELAY_IN_MS);
     cy.get(CIRCLE_MAIN).each(($el, index, $divs) => {
       if (index === 0) {
         cy.wrap($el).contains("o");

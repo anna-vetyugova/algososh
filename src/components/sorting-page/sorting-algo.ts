@@ -127,6 +127,6 @@ export const bubbleSort = (array: TItem[], direction: string) => {
       steps.push([...array.map((item) => ({ ...item }))]);
     }
   }
-
+  // console.log(steps);
   return steps;
 };
